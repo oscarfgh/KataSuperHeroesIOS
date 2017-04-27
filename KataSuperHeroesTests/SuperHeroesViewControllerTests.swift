@@ -40,6 +40,39 @@ class SuperHeroesViewControllerTests: AcceptanceTestCase {
         
         tester().waitForView(withAccessibilityLabel: superHeroes[0].name)
     }
+    
+    func testShowsTenSuperHeroesName() {
+        let superHeroes = givenThereAreSomeSuperHeroes(10)
+        
+        openSuperHeroesViewController()
+        
+        for i in 0..<superHeroes.count {
+            let superHeroCell = tester().waitForView(withAccessibilityLabel: superHeroes[i].name)
+                as! SuperHeroTableViewCell
+            
+            expect(superHeroCell.nameLabel.text).to(equal(superHeroes[i].name))
+        }
+    }
+    
+    func testShowsAvengersSuperHeroesWithBadge() {
+        let superHeroes = givenThereAreSomeSuperHeroes(5, avengers: true)
+        
+        openSuperHeroesViewController()
+        
+        for i in 0..<superHeroes.count {
+            tester().waitForView(withAccessibilityLabel: "\(superHeroes[i].name) - Avengers Badge")
+        }
+    }
+    
+    func testShowsNoAvengersSuperHeroesWithoutBadge() {
+        let superHeroes = givenThereAreSomeSuperHeroes(5, avengers: false)
+        
+        openSuperHeroesViewController()
+        
+        for i in 0..<superHeroes.count {
+            tester().waitForAbsenceOfView(withAccessibilityLabel: "\(superHeroes[i].name) - Avengers Badge")
+        }
+    }
 
     fileprivate func givenThereAreNoSuperHeroes() {
         _ = givenThereAreSomeSuperHeroes(0)
